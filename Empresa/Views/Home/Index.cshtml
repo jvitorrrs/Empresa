@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "Cadastro";
+}
+<script>
+
+    $(document).ready(function () {
+
+
+        //Cria Evento submit do form
+        $('#form').submit(function (e) {
+
+
+            // isso aqui seria uma forma de pegar o valor do checkbox, mas nao vai ser utilizado pela mesma logica do formdata
+            //var valorSelAtv1 = $('#valorSelAtv1').is(':checked') ? 1 : 0
+
+            //var valorSelAtv2 = $('#valorSelAtv2').is(':checked') ? 1 : 0
+
+
+            //var valorSelAtv3 = $('#valorSelAtv3').is(':checked') ? 1 : 0
+
+
+            var formData = $('#form').serialize();
+
+
+            
+
+
+            formData = formData + valorappend;
+
+
+
+            console.log(formData);
+            debugger;
+
+            // Previne o Evento default de submit
+            e.preventDefault();
+
+
+            //Unbinda os enventos do modal para não duplicar
+            $('#modalConfirm').unbind();
+
+
+
+            // Abre a modal
+
+            $('#modalConfirm').modal('show', {
+
+                backdrop: 'static',
+                keyboard: false
+
+            }).on('click', '#btnSalvar', function (e) {
+
+                // Binda o evento salvar 
+               
+
+                // Faz um post para a controller para salvar
+                $.ajax({
+                    method: "POST",
+                    url: "/Home/Salvar",
+                    data: formData
+
+                }).done(function (returnData) {
+
+                    // Caso tenha sucesso mostra a mensagem
+                    console.log(returnData)
+                    $('#messageSucesso').show();
+                    $('#modalConfirm').modal('hide');
+
+                }).fail(function () {
+
+                    // Caso falha mostra a mensagem de falha
+
+                })
+
+
+
+
+
+            }).on('click', '#cancel', function (e) {
+
+               
+                //Binda o evento de fechar a modal.
+                $('#modalConfirm').modal('hide');
+
+            })
+
+
+        })
+        
+
+    })
+</script>
+    @*Mensagem de salvo*@ 
+    <div id="messageSucesso" class="alert alert-success alert-dismissable" style="display:none" role="alert">
+        Salvo com sucesso
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form action="/Home/Salvar" method="post" id="form" data-toggle="validator" role="form">
+        <div class="form-group">
+            <label for="nameInput">Nome</label>
+            <input style="display:none" id="codpar" name="codpar" value="1" />
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="nameInput" placeholder="Seu nome completo" required>
+        </div>
+        <div class="form-group">
+            <label for="dateInput">Data de Nascimento</label>
+            <input type="date" class="form-control" id="datanascimento" name="datanascimento" placeholder="Data de Nascimento" required>
+        </div>
+        <div class="form-group">
+            <label for="phoneInput">Telefone</label>
+            <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Seu telefone com DDD" required>
+        </div>
+        <div class="form-group">
+            <label for="packInput">Pacotes (Promoção: Se torne um sócio até dia 13/10 e pague a metade do preço!)</label>
+            <select class="form-control" name="pacote" id="pacote" required>
+                <option selected value="">Selecione um Pacote</option>
+            <option value="1">Sócio - R$300,00</option>
+            <option value="2">Não-Sócio - R$500,00</option>
+            </select>
+        </div>
+        <div class="form-group custom-control custom-checkbox grid">
+            <label for="activityInput">Atividades Extras</label><br />
+            <input type="checkbox" class="custom-control-input" id="atividade1" name="atv1" value="1">
+            <label class="custom-control-label" for="activity1">Atividade 1 (R$300,00)</label><br />
+            <input type="checkbox" class="custom-control-input" id="atividade2" name="atv2" value="2">
+            <label class="custom-control-label" for="activity2">Atividade 2 (R$500,00)</label><br />
+            <input type="checkbox" class="custom-control-input" id="atividade3" name="atv3" value="3">
+            <label class="custom-control-label" for="activity3">Atividade 3 (R$600,00)</label><br />
+        </div><br />
+        <button class="btn btn-primary" id="btnEnviar">Enviar</button>
+    </form>
+
+    @* modal *@
+    <div class="modal fade" id="modalConfirm" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confime seus dados</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Está tudo certo?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel">Voltar</button>
+                    <button type="button" name="btnSalvar" class="btn btn-secondary" id="btnSalvar">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
